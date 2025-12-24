@@ -42,3 +42,25 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET(req: NextRequest) {
+  const payload = await verifyToken(req);
+  if (!payload) {
+    return NextResponse.redirect("/login", 302);
+  }
+
+  try {
+    const result = await prisma.tag.findMany()
+
+    return NextResponse.json(
+      result , { status: 200 }
+    )
+
+  } catch (e) {
+    console.error("Creation error:", e);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}

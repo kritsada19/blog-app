@@ -17,13 +17,23 @@ export async function GET(
         title: true,
         slug: true,
         content: true,
-        status: true,
         createAt: true,
         author: { select: { id: true, name: true } },
         category: { select: { id: true, name: true } },
         tags: {
           select: {
             tag: { select: { id: true, name: true } },
+          },
+        },
+        comments: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            user: {
+              select: { id: true, name: true },
+            },
           },
         },
       },
@@ -37,7 +47,7 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   const payload = await verifyToken(req);
   if (!payload) {
@@ -159,6 +169,10 @@ export async function DELETE(
 
     await prisma.$transaction(async (tx) => {
       await tx.postTag.deleteMany({
+        where: { postId: post.id },
+      });
+
+      await tx.comment.deleteMany({
         where: { postId: post.id },
       });
 

@@ -4,25 +4,13 @@ import prisma from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  const payload = await verifyToken(req);
-  if (!payload) {
-    return NextResponse.redirect("/login", 302);
-  }
-
-  const authorId = payload.id as number;
-
-  const { searchParams } = new URL(req.url);
-  const getAllPosts = searchParams.get("all") === "true";
-
   try {
     const postsData = await prisma.post.findMany({
-      where: getAllPosts ? {} : { authorId },
       select: {
         id: true,
         title: true,
         slug: true,
         content: true,
-        status: true,
         createAt: true,
         author: { select: { id: true, name: true } },
         category: { select: { id: true, name: true } },
@@ -31,6 +19,17 @@ export async function GET(req: NextRequest) {
             tag: { select: { id: true, name: true } },
           },
         },
+        comments: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            user: {
+              select: { id: true, name: true }
+            }
+          }
+        }
       },
     });
 

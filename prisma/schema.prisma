@@ -28,7 +28,6 @@ model Post {
   title      String
   slug       String     @unique
   content    String
-  status     PostStatus @default(DRAFT)
   authorId   Int
   // authorId reference with id from table User
   author     User       @relation(fields: [authorId], references: [id])
@@ -38,11 +37,6 @@ model Post {
   comments   Comment[]
   createAt   DateTime   @default(now())
   updateAt   DateTime   @updatedAt
-}
-
-enum PostStatus {
-  DRAFT
-  PUBLISHED
 }
 
 model Category {
