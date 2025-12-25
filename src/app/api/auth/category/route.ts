@@ -5,7 +5,7 @@ import { verifyToken } from "@/lib/auth";
 export async function POST(req: NextRequest) {
   const payload = await verifyToken(req);
   if (!payload) {
-    return NextResponse.redirect("/login", 302);
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
@@ -19,15 +19,27 @@ export async function POST(req: NextRequest) {
 
   try {
     const { name } = await req.json();
-    if (!name) {
+    const categoryName = name?.trim();
+    if (!categoryName) {
       return NextResponse.json(
         { message: "Category name is required" },
         { status: 400 }
       );
     }
 
+    const existed = await prisma.category.findUnique({
+      where: { name: categoryName },
+    });
+
+    if (existed) {
+      return NextResponse.json(
+        { message: "Category already exists" },
+        { status: 409 }
+      );
+    }
+
     await prisma.category.create({
-      data: { name },
+      data: { name: categoryName },
     });
 
     return NextResponse.json(

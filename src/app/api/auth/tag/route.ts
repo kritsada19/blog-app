@@ -5,7 +5,7 @@ import { verifyToken } from "@/lib/auth";
 export async function POST(req: NextRequest) {
   const payload = await verifyToken(req);
   if (!payload) {
-    return NextResponse.redirect("/login", 302);
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
@@ -19,15 +19,28 @@ export async function POST(req: NextRequest) {
 
   try {
     const { name } = await req.json();
-    if (!name) {
+    const tagName = name?.trim();
+
+    if (!tagName) {
       return NextResponse.json(
         { message: "Tag name is required" },
         { status: 400 }
       );
     }
 
+    const existed = await prisma.tag.findUnique({
+      where: { name: tagName },
+    });
+
+    if (existed) {
+      return NextResponse.json(
+        { message: "Tag already exists" },
+        { status: 409 }
+      );
+    }
+
     await prisma.tag.create({
-      data: { name },
+      data: { name: tagName },
     });
 
     return NextResponse.json(
@@ -44,20 +57,14 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const payload = await verifyToken(req);
-  if (!payload) {
-    return NextResponse.redirect("/login", 302);
-  }
-
   try {
-    const result = await prisma.tag.findMany()
+    const result = await prisma.tag.findMany({
+      orderBy: { name: "asc" },
+    });
 
-    return NextResponse.json(
-      result , { status: 200 }
-    )
-
+    return NextResponse.json(result, { status: 200 });
   } catch (e) {
-    console.error("Creation error:", e);
+    console.error("Fetch error:", e);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

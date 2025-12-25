@@ -8,7 +8,7 @@ export async function POST(
 ) {
   const payload = await verifyToken(req);
   if (!payload) {
-    return NextResponse.redirect("/login", 302);
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const userId = payload.id;
@@ -22,7 +22,7 @@ export async function POST(
       return NextResponse.json({ message: "Invalid id" }, { status: 400 });
     }
 
-    if (!content) {
+    if (!content?.trim()) {
       return NextResponse.json(
         { message: "Content is required" },
         { status: 400 }
@@ -46,7 +46,7 @@ export async function POST(
 
     await prisma.comment.create({
       data: {
-        content,
+        content: content.trim(),
         postId: post.id,
         userId,
       },
@@ -71,7 +71,7 @@ export async function PUT(
 ) {
   const payload = await verifyToken(req);
   if (!payload) {
-    return NextResponse.redirect("/login", 302);
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
@@ -102,7 +102,7 @@ export async function PUT(
       );
     }
 
-    if (!content) {
+    if (!content?.trim()) {
       return NextResponse.json(
         { message: "Content is required" },
         { status: 400 }
@@ -126,7 +126,7 @@ export async function PUT(
     await prisma.comment.update({
       where: { id: commentId },
       data: {
-        content,
+        content: content.trim(),
       },
     });
 
@@ -149,7 +149,7 @@ export async function DELETE(
 ) {
   const payload = await verifyToken(req);
   if (!payload) {
-    return NextResponse.redirect("/login", 302);
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
@@ -192,7 +192,7 @@ export async function DELETE(
 
     return NextResponse.json(
       { message: "Delete comment successful" },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (e) {
     console.error(e);
