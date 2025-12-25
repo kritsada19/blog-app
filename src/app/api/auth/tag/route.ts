@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const result = await prisma.tag.findMany({
       orderBy: { name: "asc" },
