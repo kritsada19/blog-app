@@ -80,7 +80,7 @@ export default async function PostList({ posts }: { posts: Props[] }) {
             </Link>
 
             <Link
-              href={`/posts/${post.slug}#comments`}
+              href={`/posts/${post.slug}`}
               className="text-gray-600 hover:underline"
             >
               { post.comments.length } ความคิดเห็น

@@ -8,6 +8,7 @@ interface Props {
     data: { postsData: Post[] } | null;
     loading: boolean;
     error: string | null;
+    onDelete?: (slug: string) => void;
 }
 
 interface Post {
@@ -21,7 +22,7 @@ interface Post {
     tags: { tag: { id: number; name: string; } }[];
 }
 
-function Dashboard({ data, loading, error }: Props) {
+function Dashboard({ data, loading, error, onDelete }: Props) {
     return (
         <>
             {loading && <p className="p-6">Loading...</p>}
@@ -65,17 +66,21 @@ function Dashboard({ data, loading, error }: Props) {
                                             ดู
                                         </Link>
                                         <Link
-                                            href={`/dashboard/posts/${post.id}/edit`}
+                                            href={`/dashboard/edit/${post.slug}`}
                                             className="text-sm text-gray-600 hover:underline"
                                         >
                                             แก้ไข
                                         </Link>
-                                        <Link
-                                            href={`/dashboard/posts/${post.id}/delete`}
+                                        <a
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                onDelete && onDelete(post.slug);
+                                            }}
                                             className="text-sm text-red-600 hover:underline"
                                         >
                                             ลบ
-                                        </Link>
+                                        </a>
                                     </div>
                                 </div>
 

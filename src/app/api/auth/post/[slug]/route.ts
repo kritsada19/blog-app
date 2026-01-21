@@ -101,7 +101,7 @@ export async function PUT(
 
     await prisma.$transaction(async (tx) => {
       const updatePost = await tx.post.update({
-        where: { slug: slugSearch },
+        where: { id: post.id },
         data: {
           title: title.trim(),
           slug,
