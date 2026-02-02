@@ -76,17 +76,22 @@ export default function CreatePostPage() {
 
     return (
         <>
-            <div className="max-w-3xl mx-auto p-6">
-                <h1 className="text-2xl font-bold mb-6">สร้างโพสต์ใหม่</h1>
-                <FormUi 
-                    form={form}
-                    handleChange={handleChange}
-                    handleCategoryChange={handleCategoryChange}
-                    toggleTag={toggleTag}
-                    handleSubmit={handleSubmit}
-                    loading={loading}
-                    error={error}
-                />
+            <div className="min-h-screen bg-black flex items-start justify-center py-10">
+                <div className="w-full max-w-3xl bg-gray-950 rounded-2xl shadow-lg p-8">
+                    <h1 className="text-2xl font-bold text-center mb-6 text-emerald-400">
+                        สร้างโพสต์ใหม่
+                    </h1>
+
+                    <FormUi
+                        form={form}
+                        handleChange={handleChange}
+                        handleCategoryChange={handleCategoryChange}
+                        toggleTag={toggleTag}
+                        handleSubmit={handleSubmit}
+                        loading={loading}
+                        error={error}
+                    />
+                </div>
             </div>
         </>
     );

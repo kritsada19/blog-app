@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
 
     const page = Number(searchParams.get("page") ?? 1);
     const limit = Number(searchParams.get("limit") ?? 10);
+    const categoryId = Number(searchParams.get("categoryId")) ?? undefined;
 
     // page 1, limit 10 = 0-9
     // page 2, limit 10 = 10-19
@@ -16,7 +17,12 @@ export async function GET(req: NextRequest) {
 
     const [postsData, total] = await prisma.$transaction([
       prisma.post.findMany({
-        skip,
+        where: categoryId
+          ? {
+              category: { id: categoryId },
+            }
+          : {},
+        skip: skip,
         take: limit,
         orderBy: { createAt: "desc" },
         select: {
@@ -48,7 +54,13 @@ export async function GET(req: NextRequest) {
           },
         },
       }),
-      prisma.post.count(),
+      prisma.post.count({
+        where: categoryId
+          ? {
+              categoryId: categoryId,
+            }
+          : {},
+      }),
     ]);
 
     return NextResponse.json({
@@ -63,7 +75,7 @@ export async function GET(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { message: "Failed to fetch posts" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -98,7 +110,7 @@ export async function POST(req: NextRequest) {
     if (post) {
       return NextResponse.json(
         { message: "Post with the same title already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -127,12 +139,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { message: "Post created successfully" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch {
     return NextResponse.json(
       { message: "Failed to create post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
