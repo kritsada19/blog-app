@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 
 interface Props {
@@ -61,6 +62,17 @@ export default async function PostList({ posts }: { posts: Props[] }) {
             )}
           </div>
 
+          {/* image */}
+          {post.imageUrl && (
+            <div className="mb-5 overflow-hidden rounded-lg">
+              <img
+                src={post.imageUrl}
+                alt={post.title}
+                className="w-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          )}
+
           {/* content preview */}
           <p className="mb-5 text-zinc-300 leading-relaxed line-clamp-4">
             {post.content}
@@ -86,10 +98,8 @@ export default async function PostList({ posts }: { posts: Props[] }) {
             </div>
           )}
 
-          {/* divider */}
           <div className="my-4 h-px bg-zinc-800" />
 
-          {/* actions */}
           <div className="flex items-center justify-between text-sm">
             <Link
               href={`/posts/${post.slug}`}
