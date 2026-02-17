@@ -92,7 +92,7 @@ export default function EditPostPage({ params }: { params: Promise<{ slug: strin
         try {
             await axios.put(`/api/auth/post/${post?.slug}`, form);
 
-            router.push("/dashboard");
+            router.push("/");
         } catch (err: any) {
             setError(err.response?.data?.message || "Edit post failed");
         } finally {
