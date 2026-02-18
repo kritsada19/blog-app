@@ -52,7 +52,7 @@ export default async function PostDetail({ post }: PostDetailProps) {
   return (
     <div className="min-h-screen bg-black text-gray-200">
       <div className="max-w-3xl mx-auto py-10 px-4 space-y-8">
-        
+
         {/* Post Card */}
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg space-y-6">
 
@@ -61,7 +61,7 @@ export default async function PostDetail({ post }: PostDetailProps) {
           </h1>
 
           <div className="text-sm text-gray-400">
-            โดย <span className="text-emerald-400">{post.author.name}</span> · 
+            โดย <span className="text-emerald-400">{post.author.name}</span> ·
             หมวดหมู่{" "}
             <span className="text-emerald-400">
               {post.category?.name ?? "ไม่มีหมวดหมู่"}
@@ -144,20 +144,20 @@ export default async function PostDetail({ post }: PostDetailProps) {
                 {(isAdmin ||
                   isOwnerComment(c.user.id) ||
                   isOwnerPost) && (
-                  <div className="flex gap-4 text-sm">
-                    <EditCommentButton
-                      commentId={c.id}
-                      postSlug={post.slug}
-                      payloadId={payload.id}
-                    />
-                    <DeleteCommentButton
-                      commentId={c.id}
-                      postSlug={post.slug}
-                      payloadId={payload.id}
-                      postId={post.id}
-                    />
-                  </div>
-                )}
+                    <div className="flex gap-4 text-sm">
+                      <EditCommentButton
+                        commentId={c.id}
+                        postSlug={post.slug}
+                        payloadId={payload.id}
+                      />
+                      <DeleteCommentButton
+                        commentId={c.id}
+                        postSlug={post.slug}
+                        payloadId={payload.id}
+                        postId={post.id}
+                      />
+                    </div>
+                  )}
               </li>
             ))}
           </ul>
