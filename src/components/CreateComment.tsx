@@ -1,6 +1,6 @@
 "use client";
 
-import { createComment } from "@/app/actions/createComment";
+import { createComment } from "@/app/actions/createCommnet";
 import { useActionState } from "react"
 
 type Props = {
