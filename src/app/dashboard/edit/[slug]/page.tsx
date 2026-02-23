@@ -48,7 +48,7 @@ export default function EditPostPage({ params }: { params: Promise<{ slug: strin
         setForm({
             title: post.title,
             slug: post.slug,
-            content: post.content,
+            content: post.content || "",
             imageUrl: post.imageUrl || "",
             categoryId: post.category?.id ?? 0,
             tagIds: post.tags.map(t => t.tag.id),

@@ -81,7 +81,6 @@ export default function FormUi({ form, handleChange, handleCategoryChange, toggl
                         value={form.content}
                         onChange={handleChange}
                         rows={6}
-                        required
                         className="w-full rounded-lg border border-emerald-900/50 bg-black px-3 py-2 text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                 </div>

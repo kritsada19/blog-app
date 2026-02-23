@@ -33,14 +33,14 @@ export async function GET(req: NextRequest) {
         where: { authorId: user.id },
         skip,
         take: limit,
-        orderBy: { createAt: "desc" },
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           title: true,
           slug: true,
           content: true,
           imageUrl: true,
-          createAt: true,
+          createdAt: true,
           author: { select: { id: true, name: true } },
           category: { select: { id: true, name: true } },
           tags: {

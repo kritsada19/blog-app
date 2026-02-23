@@ -7,7 +7,7 @@ interface Props {
   slug: string;
   content: string;
   imageUrl: string | null;
-  createAt: string;
+  createdAt: string;
   category: {
     id: number;
     name: string;
@@ -51,7 +51,7 @@ export default async function PostList({ posts }: { posts: Props[] }) {
 
           {/* meta */}
           <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-400">
-            <span>{new Date(post.createAt).toLocaleDateString()}</span>
+            <span>{new Date(post.createdAt).toLocaleDateString()}</span>
             {post.category && (
               <>
                 <span>•</span>

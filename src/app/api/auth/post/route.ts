@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const { title, content, categoryId, tagIds, imageUrl } = await req.json();
-    if (!title?.trim() || !content?.trim() || !categoryId) {
+    if (!title?.trim() || !categoryId) {
       return NextResponse.json({ message: "Invalid input" }, { status: 400 });
     }
 
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
         data: {
           title: title.trim(),
           slug,
-          content: content.trim(),
+          content: content.trim() || null,
           imageUrl: imageUrl?.trim() || null,
           authorId,
           categoryId,

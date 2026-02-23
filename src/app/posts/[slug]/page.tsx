@@ -4,6 +4,7 @@ async function fetchPostDetail(slug: string) {
     const res = await fetch(`http://localhost:3000/api/auth/post/${slug}`, {
         next: {
             revalidate: 60,
+            tags: ['post-detail']
         },
     });
     if (!res.ok) {

@@ -27,7 +27,7 @@ model Post {
   id         Int        @id @default(autoincrement())
   title      String
   slug       String     @unique
-  content    String
+  content    String?
   imageUrl   String?
   authorId   Int
   // authorId reference with id from table User

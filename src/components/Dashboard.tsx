@@ -17,7 +17,7 @@ interface Post {
     slug: string;
     content: string;
     imageUrl: string | null;
-    createAt: string;
+    createdAt: string;
     category: { id: number; name: string } | null;
     tags: { tag: { id: number; name: string } }[];
 }
@@ -72,7 +72,7 @@ function Dashboard({ data, loading, error, onDelete }: Props) {
                                             {post.title}
                                         </h2>
                                         <p className="text-xs text-gray-500">
-                                            {new Date(post.createAt).toLocaleDateString()}
+                                            {new Date(post.createdAt).toLocaleDateString()}
                                         </p>
                                     </div>
 
