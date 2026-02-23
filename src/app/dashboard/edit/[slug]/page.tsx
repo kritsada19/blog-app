@@ -21,7 +21,7 @@ interface Post {
     slug: string;
     content: string;
     imageUrl: string | null;
-    createAt: string;
+    createdAt: string;
     category: { id: number; name: string } | null;
     tags: { tag: { id: number; name: string; } }[];
 }
