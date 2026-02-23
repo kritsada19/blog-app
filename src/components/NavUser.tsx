@@ -25,7 +25,7 @@ export default function NavUser({ payload }: Props) {
     return (
       <a
         href="/login"
-        className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-4 py-1.5 text-sm text-emerald-400 hover:bg-emerald-500/20 transition"
+        className="text-xs sm:text-sm rounded-md border border-emerald-500/40 bg-emerald-500/10 px-4 py-1.5 text-emerald-400 hover:bg-emerald-500/20 transition"
       >
         Login
       </a>
@@ -33,13 +33,13 @@ export default function NavUser({ payload }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-4">
-      <span className="text-sm text-gray-200">
+    <div className="flex items-center gap-0.5 sm:gap-3">
+      <span className="text-xs sm:text-sm text-gray-200">
         {payload.name}
       </span>
 
       <button
-        className="rounded-md border border-red-500/30 px-3 py-1.5 text-sm text-red-400 hover:bg-red-500/10 transition"
+        className="text-xs sm:text-sm rounded-md border border-red-500/30 px-3 py-1.5 text-red-400 hover:bg-red-500/10 transition"
         onClick={handleLogout}
       >
         Logout
@@ -47,10 +47,19 @@ export default function NavUser({ payload }: Props) {
 
       <Link
         href="/dashboard/create"
-        className="rounded-md bg-emerald-500 px-4 py-1.5 text-sm font-medium text-black hover:bg-emerald-400 transition"
+        className="text-xs sm:text-sm rounded-md bg-emerald-500 px-4 py-1.5 font-medium text-black hover:bg-emerald-400 transition"
       >
         สร้างโพสต์ใหม่
       </Link>
+
+      { payload.role === "ADMIN" && (
+        <Link
+          href={'/admin/users'}
+          className="text-xs sm:text-sm rounded-md bg-emerald-500 px-4 py-1.5 font-medium text-black hover:bg-emerald-400 transition"
+        >
+          Admin Dashboard
+        </Link>
+      )}
     </div>
   );
 }

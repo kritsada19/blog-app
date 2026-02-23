@@ -1,19 +1,21 @@
 import PaginationUi from "./PaginationUi";
 
-export default function IsrPagination({
+export default async function IsrPagination({
     page,
-    totalPages
+    totalPages,
+    categoryId,
 }: {
     page: number;
     totalPages: number;
+    categoryId?: string;
 }) {
     return (
         <PaginationUi
             page={page}
             hasPrev={page > 1}
             hasNext={page < totalPages}
-            prevHref={`?page=${page - 1}`}
-            nextHref={`?page=${page + 1}`}
+            prevHref={categoryId ? `?categoryId=${categoryId}&page=${page - 1}` : `?page=${page - 1}`}
+            nextHref={categoryId ? `?categoryId=${categoryId}&page=${page + 1}` : `?page=${page + 1}`}
         />
     )
 }

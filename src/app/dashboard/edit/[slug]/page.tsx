@@ -48,7 +48,7 @@ export default function EditPostPage({ params }: { params: Promise<{ slug: strin
         setForm({
             title: post.title,
             slug: post.slug,
-            content: post.content,
+            content: post.content || "",
             imageUrl: post.imageUrl || "",
             categoryId: post.category?.id ?? 0,
             tagIds: post.tags.map(t => t.tag.id),
@@ -92,7 +92,7 @@ export default function EditPostPage({ params }: { params: Promise<{ slug: strin
         try {
             await axios.put(`/api/auth/post/${post?.slug}`, form);
 
-            router.push("/dashboard");
+            router.push("/");
         } catch (err: any) {
             setError(err.response?.data?.message || "Edit post failed");
         } finally {
@@ -103,7 +103,7 @@ export default function EditPostPage({ params }: { params: Promise<{ slug: strin
     return (
         <>
             <div className="max-w-3xl mx-auto p-6">
-                <h1 className="text-2xl font-bold mb-6">สร้างโพสต์ใหม่</h1>
+                <h1 className="text-2xl font-bold mb-6">แก้ไขโพสค์</h1>
                 <FormUi
                     form={form}
                     handleChange={handleChange}

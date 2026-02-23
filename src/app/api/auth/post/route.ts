@@ -1,5 +1,4 @@
 import { NextResponse, NextRequest } from "next/server";
-import slugify from "slugify";
 import prisma from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 
@@ -9,6 +8,7 @@ export async function GET(req: NextRequest) {
 
     const page = Number(searchParams.get("page") ?? 1);
     const limit = Number(searchParams.get("limit") ?? 10);
+    const categoryId = Number(searchParams.get("categoryId")) ?? undefined;
 
     // page 1, limit 10 = 0-9
     // page 2, limit 10 = 10-19
@@ -16,16 +16,21 @@ export async function GET(req: NextRequest) {
 
     const [postsData, total] = await prisma.$transaction([
       prisma.post.findMany({
-        skip,
+        where: categoryId
+          ? {
+              category: { id: categoryId },
+            }
+          : {},
+        skip: skip,
         take: limit,
-        orderBy: { createAt: "desc" },
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           title: true,
           slug: true,
           content: true,
           imageUrl: true,
-          createAt: true,
+          createdAt: true,
           author: { select: { id: true, name: true } },
           category: { select: { id: true, name: true } },
 
@@ -48,7 +53,13 @@ export async function GET(req: NextRequest) {
           },
         },
       }),
-      prisma.post.count(),
+      prisma.post.count({
+        where: categoryId
+          ? {
+              categoryId: categoryId,
+            }
+          : {},
+      }),
     ]);
 
     return NextResponse.json({
@@ -63,7 +74,7 @@ export async function GET(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { message: "Failed to fetch posts" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -78,7 +89,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const { title, content, categoryId, tagIds, imageUrl } = await req.json();
-    if (!title?.trim() || !content?.trim() || !categoryId) {
+    if (!title?.trim() || !categoryId) {
       return NextResponse.json({ message: "Invalid input" }, { status: 400 });
     }
 
@@ -86,10 +97,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "title too long" }, { status: 400 });
     }
 
-    const slug = slugify(title.trim(), {
-      lower: true,
-      strict: true,
-    });
+    function toSlug(title: string) {
+      return title
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-") // space → -
+        .replace(/[^\u0E00-\u0E7Fa-z0-9-]/g, "") // อนุญาต ไทย + อังกฤษ + เลข
+        .replace(/-+/g, "-") // กัน -- ซ้อน
+        .replace(/^-|-$/g, ""); // ลบ - หน้า/ท้าย
+    }
+
+    const slug = toSlug(title);
 
     const post = await prisma.post.findUnique({
       where: { slug },
@@ -98,7 +116,7 @@ export async function POST(req: NextRequest) {
     if (post) {
       return NextResponse.json(
         { message: "Post with the same title already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -107,7 +125,7 @@ export async function POST(req: NextRequest) {
         data: {
           title: title.trim(),
           slug,
-          content: content.trim(),
+          content: content.trim() || null,
           imageUrl: imageUrl?.trim() || null,
           authorId,
           categoryId,
@@ -127,12 +145,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { message: "Post created successfully" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch {
     return NextResponse.json(
       { message: "Failed to create post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

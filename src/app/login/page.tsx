@@ -30,7 +30,7 @@ export default function LoginPage() {
             const response = await axios.post('api/login', form)
             if (response.status === 200) {
                 if (response.data.role === 'ADMIN') {
-                    router.replace('/admin/dashboard');
+                    router.replace('/admin/users');
                 } else {
                     router.replace('/')
                 }
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-black py-2 font-semibold text-emerald-500 hover:bg-emerald-500 hover:text-black transition duration-500"
+                        className="w-full rounded-lg border border-emerald-500 bg-black py-2 font-semibold text-emerald-500 hover:bg-emerald-500 hover:text-black transition duration-500"
                     >
                         Login
                     </button>

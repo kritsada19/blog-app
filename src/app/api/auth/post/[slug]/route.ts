@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
-import slugify from "slugify";
 
 export async function GET(
   req: NextRequest,
@@ -18,7 +17,7 @@ export async function GET(
         slug: true,
         content: true,
         imageUrl: true,
-        createAt: true,
+        createdAt: true,
         author: { select: { id: true, name: true } },
         category: { select: { id: true, name: true } },
         tags: {
@@ -69,7 +68,7 @@ export async function PUT(
 
   try {
     const { slug: slugSearch } = await params;
-    const { title, content, categoryId, tagIds = [] } = await req.json();
+    const { title, content, categoryId, tagIds = [], imageUrl } = await req.json();
 
     const post = await prisma.post.findUnique({
       where: { slug: slugSearch },
@@ -94,10 +93,17 @@ export async function PUT(
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    const slug = slugify(title.trim(), {
-      lower: true,
-      strict: true,
-    });
+    function toSlug(title: string) {
+      return title
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-") // space → -
+        .replace(/[^\u0E00-\u0E7Fa-z0-9-]/g, "") // อนุญาต ไทย + อังกฤษ + เลข
+        .replace(/-+/g, "-") // กัน -- ซ้อน
+        .replace(/^-|-$/g, ""); // ลบ - หน้า/ท้าย
+    }
+
+    const slug = toSlug(title);
 
     await prisma.$transaction(async (tx) => {
       const updatePost = await tx.post.update({
@@ -107,6 +113,7 @@ export async function PUT(
           slug,
           content: content.trim(),
           categoryId,
+          imageUrl: imageUrl?.trim() || null,
         },
       });
 
